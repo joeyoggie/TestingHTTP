@@ -17,6 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ImageView;
+
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +28,7 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
 
 
 public class MainActivity extends ActionBarActivity {
@@ -40,6 +44,9 @@ public class MainActivity extends ActionBarActivity {
     EditText enteredMessage;
 
     String deviceID;
+    ImageView imageView;
+    boolean lowRes = true;
+    boolean highRes = false;
 
     int responseCodeG;
 
@@ -71,20 +78,18 @@ public class MainActivity extends ActionBarActivity {
                 contentTextView.setText(response);
             }
         };
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,new IntentFilter("broadcastIntent"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("broadcastIntent"));
     }
 
 
     //Submit the info to the server (register a new device)
-    public void submitInfo(View view)
-    {
+    public void submitInfo(View view) {
         //Check for internet connectivity first
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connMgr.getActiveNetworkInfo();
 
         //If there's internet connection
-        if(netInfo != null && netInfo.isConnected())
-        {
+        if (netInfo != null && netInfo.isConnected()) {
             //Get the info from the UI (textboxes)
             String userName = enteredUserName.getText().toString();
             String name = enteredName.getText().toString();
@@ -100,45 +105,39 @@ public class MainActivity extends ActionBarActivity {
             startService(reg);
         }
         //If there's no internet connection
-        else
-        {
+        else {
             statusTextView.setText("No internet connection!");
         }
     }
 
     //Get the user info from the server (using the device ID)
-    public void getInfo(View view)
-    {
+    public void getInfo(View view) {
         //Check for internet connectivity first
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connMgr.getActiveNetworkInfo();
 
         //If there's an internet connectioj
-        if(netInfo != null && netInfo.isConnected())
-        {
+        if (netInfo != null && netInfo.isConnected()) {
             downloadThread download = new downloadThread();
 
             //Get the info from the server in a background thread
             download.execute("http://192.168.1.44:8080/MyFirstServlet/GetInfo?deviceID=" + deviceID);
         }
         //If there's no internet connection
-        else
-        {
+        else {
             statusTextView.setText("No internet connection!");
         }
     }
 
 
     //Send a message to the server, which will then send it to the recepient
-    public void sendMessage(View view)
-    {
+    public void sendMessage(View view) {
         //Check if there's an internet connection
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connMgr.getActiveNetworkInfo();
 
         //If there's an internet connection
-        if(netInfo != null && netInfo.isConnected())
-        {
+        if (netInfo != null && netInfo.isConnected()) {
             //Get the value of the textfields from the UI
             String senderUserName = enteredUserName.getText().toString();
             String recepientUserName = enteredRecepient.getText().toString();
@@ -146,13 +145,13 @@ public class MainActivity extends ActionBarActivity {
 
             //Send the message info to the server in a background thread
             downloadThread download = new downloadThread();
-            download.execute("http://192.168.1.44:8080/MyFirstServlet/SendNewMessage?senderUserName="+ URLEncoder.encode(senderUserName)+"&recepientUserName="+URLEncoder.encode(recepientUserName)+"&message="+URLEncoder.encode(message));
+            download.execute("http://192.168.1.44:8080/MyFirstServlet/SendNewMessage?senderUserName=" + URLEncoder.encode(senderUserName) + "&recepientUserName=" + URLEncoder.encode(recepientUserName) + "&message=" + URLEncoder.encode(message));
         }
         //If there's no internet connection
-        else
-        {
+        else {
             statusTextView.setText("No internet connection!");
         }
+
     }
 
     @Override
@@ -177,35 +176,28 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     //AsyncTask that will handle the HTTP connections in a background thread
-    public class downloadThread extends AsyncTask<String,Void,String>{
+    public class downloadThread extends AsyncTask<String, Void, String> {
 
-        protected String doInBackground(String... urls)
-        {
+        protected String doInBackground(String... urls) {
             String result = null;
             try {
                 result = downloadUrl(urls[0]);
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
 
             }
             return result;
         }
 
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             contentTextView.setText("Loading...");
         }
 
-        protected void onPostExecute(String result)
-        {
+        protected void onPostExecute(String result) {
             contentTextView.setText(result);
         }
 
-        protected void onProgressUpdate(Void... value)
-        {
+        protected void onProgressUpdate(Void... value) {
             statusTextView.setText("" + responseCodeG);
             contentTextView.setText("Still loading...");
         }
@@ -246,67 +238,4 @@ public class MainActivity extends ActionBarActivity {
             }
         }//End of downloadUrl method
     }
-
-    /*public class downloadThread extends AsyncTask<String,Void,Bitmap>{
-
-        protected Bitmap doInBackground(String... urls)
-        {
-            Bitmap result = null;
-            try {
-                result = downloadUrl(urls[0]);
-            }
-            catch (IOException e)
-            {
-                //result = "Unable to retrieve image. URL might be invalid!";
-            }
-            return result;
-        }
-
-        protected void onPreExecute()
-        {
-            contentTextView.setText("Loading...");
-        }
-
-        protected void onPostExecute(Bitmap result)
-        {
-            imageView.setImageBitmap(result);
-            contentTextView.setText("Done!");
-        }
-
-        protected void onProgressUpdate(Void... value)
-        {
-            statusTextView.setText("" + responseCodeG);
-            contentTextView.setText("Still loading...");
-        }
-
-
-        private Bitmap downloadUrl(String myurl) throws IOException {
-            InputStream is = null;
-            try {
-                URL url = new URL(myurl);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(10000);
-                conn.setConnectTimeout(15000);
-                conn.setRequestMethod("GET");
-                conn.setDoInput(true);
-                // Starts the query
-                conn.connect();
-                int response = conn.getResponseCode();
-                Log.d("MainActivity", "The response is: " + response);
-                responseCodeG = response;
-                publishProgress();
-                is = conn.getInputStream();
-
-                Bitmap bitmap = BitmapFactory.decodeStream(is);
-                return bitmap;
-
-                // Makes sure that the InputStream is closed after the app is
-                // finished using it.
-            } finally {
-                if (is != null) {
-                    is.close();
-                }
-            }
-        }
-    }*/
 }

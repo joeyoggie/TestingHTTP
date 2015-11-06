@@ -1,0 +1,133 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <!--
+        <RadioGroup
+            android:id="@+id/radio_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/low_resolution_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Low resolution"
+                android:onClick="low_res_select"/>
+            <RadioButton
+                android:id="@+id/high_resolution_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="High resolution"
+                android:onClick="high_res_select"/>
+        </RadioGroup>
+    -->
+        <Button
+            android:id="@+id/get_info_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get info from server"
+            android:onClick="getInfo"/>
+
+        <TextView
+            android:id="@+id/status_text_view_static"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status code: "
+            android:layout_toRightOf="@id/get_info_button"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"/>
+
+        <TextView
+            android:id="@+id/status_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_toRightOf="@id/status_text_view_static" />
+
+        <EditText
+            android:id="@+id/entered_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/get_info_button"
+            android:hint="Username"/>
+
+        <EditText
+            android:id="@+id/entered_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/entered_username"
+            android:hint="Name"/>
+
+        <EditText
+            android:id="@+id/entered_phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/entered_name"
+            android:hint="Phone number"/>
+
+        <Button
+            android:id="@+id/submit_info_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/entered_phone_number"
+            android:text="Submit info"
+            android:onClick="submitInfo"/>
+
+    <TextView
+            android:id="@+id/content_text_view_static"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Response: "
+            android:layout_below="@id/submit_info_button"/>
+
+        <TextView
+            android:id="@+id/content_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_below="@id/content_text_view_static"/>
+
+    <LinearLayout
+        android:id="@+id/message_sending_layout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <EditText
+            android:layout_height="45dp"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:id="@+id/entered_message"
+            android:hint="Type your message here...">
+            <requestFocus></requestFocus>
+        </EditText>
+
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Send"
+            android:onClick="sendMessage">
+        </Button>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/entered_recepient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/message_sending_layout"
+        android:layout_marginBottom="16dp"
+        android:hint="Type your recepient here..." />
+
+</RelativeLayout>
